@@ -1,3 +1,4 @@
+using DataAccessLayer.Services;
 using TFNetCoreASPDemo.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddSingleton<IFakeDBContext, FakeDBContext>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 

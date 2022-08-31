@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.Services;
+using Microsoft.AspNetCore.Mvc;
 using TFNetCoreASPDemo.Models;
 using TFNetCoreASPDemo.Tools;
 
@@ -7,14 +8,16 @@ namespace TFNetCoreASPDemo.Controllers
     public class UserController : Controller
     {
         private readonly IFakeDBContext dbContext;
+        private readonly IUserService userService;
 
-        public UserController(IFakeDBContext fakeDb)
+        public UserController(IFakeDBContext fakeDb, IUserService us)
         {
             dbContext = fakeDb;
+            userService = us;
         }
         public IActionResult Index()
         {
-            return View(dbContext.GetAll());
+            return View(userService.GetAll().Select(x => x.ToAPI()));
         }
 
         public IActionResult Details(int id)
@@ -33,7 +36,7 @@ namespace TFNetCoreASPDemo.Controllers
             if(!ModelState.IsValid)
                 return View(form);
 
-            dbContext.Add(form.ToData());
+            userService.Create(form.ToData().ToDAL());
             return RedirectToAction("Index");
         }
 
